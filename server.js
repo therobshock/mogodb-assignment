@@ -55,6 +55,9 @@ app.get("/scrape", function(req, res) {
       result.summary = $(element)
         .find("p")
         .text();
+      result.image = $(element)
+        .find("img")
+        .attr("src");
 
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
@@ -69,19 +72,16 @@ app.get("/scrape", function(req, res) {
     });
 
     // Send a message to the client
-    res.send("Scrape Complete");
+    res.json(dbArticle);
   });
 });
 
 app.delete("/clear", function(req, res) {
-  db.Article.drop()
-    .then(function() {
+  db.Article.destroy({})
+    .then(function(dbArticle) {
       console.log("cleared");
-    })
-    .catch(function(err) {
-      console.log(err);
+      res.json(dbArticle);
     });
-    res.send("Cleared");
 });
 
 // Route for getting all Articles from the db
