@@ -34,7 +34,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 // Routes
 
 app.get("/", function(req, res) {
-  res.json(path.join(__dirname, "public/index.html"));
+  res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
 // A GET route for scraping the echoJS website
@@ -98,6 +98,16 @@ app.get("/articles", function(req, res) {
     })
     .catch(function(err) {
       // If an error occurred, send it to the client
+      res.json(err);
+    });
+});
+
+app.get("/notes", function(req, res) {
+  db.Note.find({})
+    .then(function(dbNote) {
+      res.json(dbNote);
+    })
+    .catch(function(err) {
       res.json(err);
     });
 });
